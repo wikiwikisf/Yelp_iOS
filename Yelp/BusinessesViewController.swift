@@ -2,8 +2,8 @@
 //  BusinessesViewController.swift
 //  Yelp
 //
-//  Created by Timothy Lee on 4/23/15.
-//  Copyright (c) 2015 Timothy Lee. All rights reserved.
+//  Created by Vicki Chun Grospe on 9/24/15.
+//  Copyright © 2015 Vicki Chun Grospe. All rights reserved.
 //
 
 import UIKit
@@ -24,15 +24,27 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 150
         
+        // Setup search bar in navigation bar
         let searchBar = UISearchBar()
         searchBar.sizeToFit()
         searchBar.placeholder = "Search"
         navigationItem.titleView = searchBar
         searchBar.delegate = self
 
+        // Setup filter button in navigation bar
+        let filterButton = UIBarButtonItem()
+        filterButton.title = "Filter"
+        filterButton.action = Selector("showFilterView")
+        filterButton.target = self
+        navigationItem.leftBarButtonItem = filterButton
+        
         performSearch(defaultSearch)
     }
 
+    func showFilterView() {
+        performSegueWithIdentifier("filterSegue", sender: self)
+    }
+    
     func performSearch(searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool)) {
         
         Business.searchWithTerm(searchFilters.searchTerm!, sort: searchFilters.sort, categories: searchFilters.categories, deals: searchFilters.deals) { (businesses: [Business]!, error: NSError!) -> Void in
@@ -79,14 +91,14 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         performSearch(searchTerm)
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
+  /*  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+       // self.navigationController
+        self.presentViewController(<#T##viewControllerToPresent: UIViewController##UIViewController#>, animated: <#T##Bool#>, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+        
+        //segue.destinationViewController.modalInPopover
         // Pass the selected object to the new view controller.
     }
-    */
+*/
 
 }

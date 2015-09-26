@@ -2,8 +2,8 @@
 //  BusinessCell.swift
 //  Yelp
 //
-//  Created by Vicki Chun on 9/24/15.
-//  Copyright © 2015 Timothy Lee. All rights reserved.
+//  Created by Vicki Chun Grospe on 9/24/15.
+//  Copyright © 2015 Vicki Chun Grospe. All rights reserved.
 //
 
 import UIKit
