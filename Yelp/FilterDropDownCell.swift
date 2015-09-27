@@ -1,17 +1,17 @@
 //
-//  DealSwitchCell.swift
+//  FilterDropDownCell.swift
 //  Yelp
 //
-//  Created by Vicki Chun Grospe on 9/26/15.
-//  Copyright © 2015 Vicki Chun Grospe. All rights reserved.
+//  Created by Vicki Chun on 9/26/15.
+//  Copyright © 2015 Timothy Lee. All rights reserved.
 //
 
 import UIKit
 
-class SwitchCell: UITableViewCell {
+class FilterDropDownCell: UITableViewCell {
 
-    @IBOutlet weak var switchLabel: UILabel!
-    @IBOutlet weak var onSwitch: UISwitch!
+    @IBOutlet weak var filterLabel: UILabel!
+    @IBOutlet weak var filterSelectButton: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()

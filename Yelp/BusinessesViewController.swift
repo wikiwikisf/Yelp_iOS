@@ -36,6 +36,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         filterButton.title = "Filter"
         filterButton.action = Selector("showFilterView")
         filterButton.target = self
+       // filterButton.setTitleTextAttributes(, forState: UIControlState.Element)
         navigationItem.leftBarButtonItem = filterButton
         
         performSearch(defaultSearch)
