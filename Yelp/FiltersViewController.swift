@@ -193,146 +193,159 @@ let SwitchCellIdentifier = "FilterSwitchCell"
 let DropDownCellIdentifier = "FilterDropDownCell"
 
 protocol FiltersViewControllerDelegate: class {
-    func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject])
+  func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:Any])
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FilterSwitchCellDelegate {
-    
-    @IBOutlet weak var tableView: UITableView!
-    
-    var tableStructure : [(String, [rowId], String)] = [("", [.Deal], SwitchCellIdentifier),
-        ("Distance", [.Radius800, .Radius1600, .Radius8000, .Radius16000], DropDownCellIdentifier),
-        ("Sort By", [.SortByBest, .SortByDistance, .SortByRating], DropDownCellIdentifier),
-        ("Category", [], SwitchCellIdentifier)]
-    
-    var dealsSwitchState: Bool = false
-    var categorySwitchStates : [Int: Bool] = [:]
-    
-    weak var delegate: FiltersViewControllerDelegate?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+  
+  @IBOutlet weak var tableView: UITableView!
+  
+  var tableStructure : [(String, [rowId], String)] = [("", [.Deal], SwitchCellIdentifier),
+      ("Distance", [.Radius800, .Radius1600, .Radius8000, .Radius16000], DropDownCellIdentifier),
+      ("Sort By", [.SortByBest, .SortByDistance, .SortByRating], DropDownCellIdentifier),
+      ("Category", [], SwitchCellIdentifier)]
+  
+  var dealsSwitchState: Bool = false
+  var sortByMenuState: YelpSortMode = .BestMatched
+  var radiusMenuState: Int = 1 // default to 1 meter
+  var categorySwitchStates : [Int: Bool] = [:] // for each row in Category section store on/off - true/false
+  
+  weak var delegate: FiltersViewControllerDelegate?
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
 
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 80
-        
-        // Setup Cancel button in navigation bar
-        let cancelButton = UIBarButtonItem()
-        cancelButton.title = "Cancel"
-        // TODO: replace this action with outlet?
-        cancelButton.action = Selector("cancelFilter")
-        cancelButton.target = self
-        navigationItem.leftBarButtonItem = cancelButton
-        
-        // Setup Search button in navigation bar
-        let searchButton = UIBarButtonItem()
-        searchButton.title = "Search"
-        // TODO: replace this action with action outlet?
-        searchButton.action = Selector("searchWithFilter")
-        searchButton.target = self
-        navigationItem.rightBarButtonItem = searchButton
-        
-        navigationItem.title = "Filter"
+    tableView.dataSource = self
+    tableView.delegate = self
+    tableView.rowHeight = UITableViewAutomaticDimension
+    tableView.estimatedRowHeight = 80
+    
+    // Setup Cancel button in navigation bar
+    let cancelButton = UIBarButtonItem()
+    cancelButton.title = "Cancel"
+    cancelButton.action = Selector("cancelFilter")
+    cancelButton.target = self
+    navigationItem.leftBarButtonItem = cancelButton
+    
+    // Setup Search button in navigation bar
+    let searchButton = UIBarButtonItem()
+    searchButton.title = "Search"
+    searchButton.action = Selector("searchWithFilters")
+    searchButton.target = self
+    navigationItem.rightBarButtonItem = searchButton
+    
+    navigationItem.title = "Filter"
 
-    }
+  }
+  
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+  }
+  
+  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    let cellType = tableStructure[indexPath.section].2
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    if cellType == SwitchCellIdentifier {
+      let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
+        as! FilterSwitchCell
+      let itemsInSection = tableStructure[indexPath.section].1
+      if itemsInSection.count == 0 {
+        cell.filterLabel?.text = restaurantCategories[indexPath.row]["name"]
+      } else {
+        cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
+      }
+      
+      cell.delegate = self
+      
+      // Try to read the switch states to render the correct state in the cell
+      if indexPath.section == 0 {
+        cell.onSwitch.on = dealsSwitchState
+      } else if indexPath.section == 3 {
+        cell.onSwitch.on = categorySwitchStates[indexPath.row] ?? false
+      }
+      
+      return cell
+    } else {
+      let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
+        as! FilterDropDownCell
+      let itemsInSection = tableStructure[indexPath.section].1
+      cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
+      
+      // TODO
+      //cell.delegate = self
+      return cell
     }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellType = tableStructure[indexPath.section].2
-        
-        if cellType == SwitchCellIdentifier {
-            let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
-                as! FilterSwitchCell
-            let itemsInSection = tableStructure[indexPath.section].1
-            if itemsInSection.count == 0 {
-                cell.filterLabel?.text = restaurantCategories[indexPath.row]["name"]
-            } else {
-                cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
-            }
-            
-            cell.delegate = self
-            
-            // Try to read the switch states to render the correct state in the cell
-            if indexPath.section == 0 {
-                cell.onSwitch.on = dealsSwitchState
-            } else if indexPath.section == 3 {
-                cell.onSwitch.on = categorySwitchStates[indexPath.row] ?? false
-            }
-            
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
-                as! FilterDropDownCell
-            let itemsInSection = tableStructure[indexPath.section].1
-            cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
-            
-            // TODO
-            //cell.delegate = self
-            return cell
-        }
-        
+  }
+  
+  func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    return tableStructure.count
+  }
+  
+  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    let sectionName = tableStructure[section].0
+    if sectionName == "Category" {
+      return restaurantCategories.count
+    } else {
+      return tableStructure[section].1.count
     }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return tableStructure.count
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionName = tableStructure[section].0
-        if sectionName == "Category" {
-            return restaurantCategories.count
-        } else {
-            return tableStructure[section].1.count            
-        }
-    }
-    
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return tableStructure[section].0
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
-    }
-    
-    func filterSwitchCellToggled(filterSwitchCell: FilterSwitchCell, didChangeValue value: Bool?) {
-        let indexPath = tableView.indexPathForCell(filterSwitchCell)!
-        print("switch cell toggled for " + "\(indexPath.section)" + "_" + "\(indexPath.row)")
-        
-        if (indexPath.section == 0) {
-            dealsSwitchState = value!
-        } else if (indexPath.section == 3) {
-            categorySwitchStates[indexPath.row] = value!
-        }
-        
-    }
-    
-    // TODO: Replace these two with delegate functions
-    func cancelFilter() {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func searchWithFilter() {
-        dismissViewControllerAnimated(true, completion: nil)
-        
-        // TODO: for now just pass an empty dictionary for switches
-        var filters: [String: AnyObject] = [:]
-        delegate?.filtersViewControllerSearch(self, didUpdateFilters: filters)
-    }
+  }
+  
+  func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    return tableStructure[section].0
+  }
+  
+  func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return 30
+  }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+  func cancelFilter() {
+    dismissViewControllerAnimated(true, completion: nil)
+  }
+  
+  func searchWithFilters() {
+    dismissViewControllerAnimated(true, completion: nil)
+  
+    // Assemble filters
+    var filters: [String: Any] = [:]
+    filters["deals"] = dealsSwitchState
+    filters["sortBy"] = sortByMenuState
+    filters["radius"] = radiusMenuState
+  
+    var selectedCategories = [String]()
+    for (row, isSelected) in categorySwitchStates {
+      if isSelected {
+          selectedCategories.append(restaurantCategories[row]["code"]!)
+      }
     }
-    */
+    filters["categories"] = selectedCategories
 
+    delegate?.filtersViewControllerSearch(self, didUpdateFilters: filters)
+  }
+
+  /*
+  // MARK: - Navigation
+
+  // In a storyboard-based application, you will often want to do a little preparation before navigation
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+      // Get the new view controller using segue.destinationViewController.
+      // Pass the selected object to the new view controller.
+  }
+  */
+
+}
+
+// MARK: - FilterSwitchCellDelegate
+extension FiltersViewController: FilterSwitchCellDelegate {
+  func filterSwitchCellToggled(filterSwitchCell: FilterSwitchCell, didChangeValue value: Bool?) {
+    let indexPath = tableView.indexPathForCell(filterSwitchCell)!
+    print("switch cell toggled for " + "\(indexPath.section)" + "_" + "\(indexPath.row)")
+    
+    if (indexPath.section == 0) {
+      dealsSwitchState = value!
+    } else if (indexPath.section == 3) {
+      categorySwitchStates[indexPath.row] = value!
+    }
+    
+  }
 }
