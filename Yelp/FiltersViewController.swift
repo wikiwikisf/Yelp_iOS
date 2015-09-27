@@ -207,7 +207,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   
   var dealsSwitchState: Bool = false
   var sortByMenuState: YelpSortMode = .BestMatched
-  var radiusMenuState: Int = 1 // default to 1 meter
+  var radiusMenuState: YelpRadiusMode = .RadiusNone
   var categorySwitchStates : [Int: Bool] = [:] // for each row in Category section store on/off - true/false
   
   weak var delegate: FiltersViewControllerDelegate?

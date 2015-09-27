@@ -14,7 +14,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   
   @IBOutlet weak var tableView: UITableView!
   
-  let defaultSearch: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool) = ("Restaurants", .Distance, [], false)
+  let defaultSearch: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode) =
+    ("Restaurants", .Distance, [], false, .RadiusNone)
   
   /*
   let defaultSearch : [String: AnyObject] =
@@ -56,8 +57,9 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     performSegueWithIdentifier("filterSegue", sender: self)
   }
   
-  func performSearch(searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool)) {
-    Business.searchWithTerm(searchFilters.searchTerm!, sort: searchFilters.sort, categories: searchFilters.categories, deals: searchFilters.deals) { (businesses: [Business]!, error: NSError!) -> Void in
+  func performSearch(searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode)) {
+    Business.searchWithTerm(searchFilters.searchTerm!, sort: searchFilters.sort, categories: searchFilters.categories,
+      deals: searchFilters.deals, radius: searchFilters.radius) { (businesses: [Business]!, error: NSError!) -> Void in
       
       // TODO: handle error
       dispatch_async(dispatch_get_main_queue()) {
@@ -110,8 +112,8 @@ extension BusinessesViewController : UISearchBarDelegate {
   func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
     savedSearchTerm = searchText
     // TODO: Pass in correct filters, default values for sort, categories, deals for now
-    let searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool) =
-    (searchText, defaultSearch.sort, defaultSearch.categories, defaultSearch.deals)
+    let searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode) =
+    (searchText, defaultSearch.sort, defaultSearch.categories, defaultSearch.deals, defaultSearch.radius)
     
     performSearch(searchFilters)
   }
@@ -122,8 +124,12 @@ extension BusinessesViewController : FiltersViewControllerDelegate {
   func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : Any]) {
     // Search with the filter from the filter view controller page
     print("perform search with filter!")
-    let searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool) =
-    (savedSearchTerm, filters["sortBy"] as! YelpSortMode, filters["categories"] as! [String], filters["deals"] as! Bool)
+    let searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode) =
+      (savedSearchTerm,
+        filters["sortBy"] as! YelpSortMode,
+        filters["categories"] as! [String],
+        filters["deals"] as! Bool,
+        filters["radius"] as! YelpRadiusMode)
     
     performSearch(searchFilters)
   }
