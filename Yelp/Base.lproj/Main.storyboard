@@ -164,7 +164,10 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mLV-sk-oxw">
-                                                    <rect key="frame" x="539" y="0.0" width="51" height="31"/>
+                                                    <rect key="frame" x="538" y="0.0" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="switchValueChanged:" destination="rzW-mm-Cc7" eventType="valueChanged" id="pzv-Dm-det"/>
+                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
@@ -224,11 +227,7 @@
                             <constraint firstAttribute="trailing" secondItem="iX2-qf-hoJ" secondAttribute="trailing" id="CMw-ml-Nb0"/>
                         </constraints>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem title="Item" id="mOv-ry-4uq"/>
-                        <barButtonItem title="Item" id="npT-76-GO1"/>
-                        <barButtonItem title="Item" id="Mu3-ym-JYa"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Title" id="VY4-5n-HBD"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>

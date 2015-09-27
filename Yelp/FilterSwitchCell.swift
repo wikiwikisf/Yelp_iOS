@@ -8,10 +8,20 @@
 
 import UIKit
 
+protocol FilterSwitchCellDelegate: class {
+    func filterSwitchCellToggled(filterSwitchCell: FilterSwitchCell, didChangeValue value: Bool?)
+}
+
 class FilterSwitchCell: UITableViewCell {
 
     @IBOutlet weak var filterLabel: UILabel!
     @IBOutlet weak var onSwitch: UISwitch!
+    weak var delegate: FilterSwitchCellDelegate?
+
+    @IBAction func switchValueChanged(sender: AnyObject) {
+        print("switch value changed")
+        delegate?.filterSwitchCellToggled(self, didChangeValue: onSwitch.on)
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

@@ -192,14 +192,17 @@ let restaurantCategories = [["name" : "Afghan", "code": "afghani"],
 let SwitchCellIdentifier = "FilterSwitchCell"
 let DropDownCellIdentifier = "FilterDropDownCell"
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FilterSwitchCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
-    let tableStructure : [(String, [rowId], String)] = [("", [.Deal], SwitchCellIdentifier),
+    var tableStructure : [(String, [rowId], String)] = [("", [.Deal], SwitchCellIdentifier),
         ("Distance", [.Radius800, .Radius1600, .Radius8000, .Radius16000], DropDownCellIdentifier),
         ("Sort By", [.SortByBest, .SortByDistance, .SortByRating], DropDownCellIdentifier),
         ("Category", [], SwitchCellIdentifier)]
+    
+    var dealsSwitchState: Bool = false
+    var categorySwitchStates : [Int: Bool] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -246,6 +249,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             } else {
                 cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
             }
+            
+            cell.delegate = self
+            
+            // Try to read the switch states to render the correct state in the cell
+            if indexPath.section == 0 {
+                cell.onSwitch.on = dealsSwitchState
+            } else if indexPath.section == 3 {
+                cell.onSwitch.on = categorySwitchStates[indexPath.row] ?? false
+            }
+            
             return cell
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
@@ -253,6 +266,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             let itemsInSection = tableStructure[indexPath.section].1
             cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
             
+            // TODO
+            //cell.delegate = self
             return cell
         }
         
@@ -277,6 +292,18 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30
+    }
+    
+    func filterSwitchCellToggled(filterSwitchCell: FilterSwitchCell, didChangeValue value: Bool?) {
+        let indexPath = tableView.indexPathForCell(filterSwitchCell)!
+        print("switch cell toggled for " + "\(indexPath.section)" + "_" + "\(indexPath.row)")
+        
+        if (indexPath.section == 0) {
+            dealsSwitchState = value!
+        } else if (indexPath.section == 3) {
+            categorySwitchStates[indexPath.row] = value!
+        }
+        
     }
     
     // TODO: Replace these two with delegate functions
