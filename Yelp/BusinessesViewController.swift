@@ -8,7 +8,8 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate{
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate,
+    UISearchBarDelegate, FiltersViewControllerDelegate{
 
     var businesses: [Business]!
     
@@ -91,15 +92,25 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 
         performSearch(searchTerm)
     }
+    
+    func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+        // Search with the filter from the filter view controller page
+        print("perform search with filter!")
+        // TODO: search with filter
+    }
 
-  /*  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        //self.presentViewController(<#T##viewControllerToPresent: UIViewController##UIViewController#>, animated: <#T##Bool#>, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
         
-       // self.navigationController
-        self.presentViewController(<#T##viewControllerToPresent: UIViewController##UIViewController#>, animated: <#T##Bool#>, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+        let navigationController = segue.destinationViewController as! UINavigationController
+        let filtersViewController = navigationController.topViewController as! FiltersViewController
+        
+        filtersViewController.delegate = self
         
         //segue.destinationViewController.modalInPopover
         // Pass the selected object to the new view controller.
     }
-*/
+    
+
 
 }

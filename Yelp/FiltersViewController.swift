@@ -192,6 +192,10 @@ let restaurantCategories = [["name" : "Afghan", "code": "afghani"],
 let SwitchCellIdentifier = "FilterSwitchCell"
 let DropDownCellIdentifier = "FilterDropDownCell"
 
+protocol FiltersViewControllerDelegate: class {
+    func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject])
+}
+
 class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FilterSwitchCellDelegate {
     
     @IBOutlet weak var tableView: UITableView!
@@ -204,6 +208,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     var dealsSwitchState: Bool = false
     var categorySwitchStates : [Int: Bool] = [:]
     
+    weak var delegate: FiltersViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -215,7 +221,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         // Setup Cancel button in navigation bar
         let cancelButton = UIBarButtonItem()
         cancelButton.title = "Cancel"
-        // TODO: replace this action with delegate pattern
+        // TODO: replace this action with outlet?
         cancelButton.action = Selector("cancelFilter")
         cancelButton.target = self
         navigationItem.leftBarButtonItem = cancelButton
@@ -223,7 +229,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         // Setup Search button in navigation bar
         let searchButton = UIBarButtonItem()
         searchButton.title = "Search"
-        // TODO: replace this action with delegate patten
+        // TODO: replace this action with action outlet?
         searchButton.action = Selector("searchWithFilter")
         searchButton.target = self
         navigationItem.rightBarButtonItem = searchButton
@@ -313,6 +319,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func searchWithFilter() {
         dismissViewControllerAnimated(true, completion: nil)
+        
+        // TODO: for now just pass an empty dictionary for switches
+        var filters: [String: AnyObject] = [:]
+        delegate?.filtersViewControllerSearch(self, didUpdateFilters: filters)
     }
 
     /*
