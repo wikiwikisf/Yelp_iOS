@@ -47,14 +47,24 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     filterButton.title = "Filter"
     filterButton.action = Selector("showFilterView")
     filterButton.target = self
-    // filterButton.setTitleTextAttributes(, forState: UIControlState.Element)
     navigationItem.leftBarButtonItem = filterButton
+    
+    // Setup map button in navigation bar
+    let mapButton = UIBarButtonItem()
+    mapButton.title = "Map"
+    mapButton.action = Selector("showMapView")
+    mapButton.target = self
+    navigationItem.rightBarButtonItem = mapButton
     
     performSearch(defaultSearch)
   }
   
   func showFilterView() {
     performSegueWithIdentifier("filterSegue", sender: self)
+  }
+  
+  func showMapView() {
+    performSegueWithIdentifier("mapSegue", sender: self)
   }
   
   func performSearch(searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode)) {
@@ -70,6 +80,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
           for business in businesses {
             print(business.name!)
             print(business.address!)
+            print(business.distance!)
           }
         }
       }
@@ -99,11 +110,13 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   // MARK: - UIViewController
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     let navigationController = segue.destinationViewController as! UINavigationController
-    let filtersViewController = navigationController.topViewController as! FiltersViewController
-    
-    filtersViewController.delegate = self
-    
-    // Pass the selected object to the new view controller.
+    for view in navigationController.viewControllers {
+      if let filtersViewController = view as? FiltersViewController {
+        filtersViewController.delegate = self
+      } else if let mapViewController = view as? MapViewController {
+        mapViewController.businesses = businesses
+      }
+    }
   }
 }
 

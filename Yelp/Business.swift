@@ -74,6 +74,9 @@ class Business: NSObject {
     }
     
     reviewCount = dictionary["review_count"] as? NSNumber
+    
+   // dealTitle = dictionary["deals.title"] as? String
+    
   }
   
   class func businesses(array array: [NSDictionary]) -> [Business] {

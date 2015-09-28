@@ -323,7 +323,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if section == 3{
+    if section == 3 {
       if tableStructure.count == 4 {
         return allCategories.count
       } else {
