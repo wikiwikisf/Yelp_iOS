@@ -192,28 +192,31 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nm9-8k-Rzl">
-                                                    <rect key="frame" x="34" y="50" width="42" height="21"/>
+                                                    <rect key="frame" x="34" y="50" width="42" height="25"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lYc-cQ-6J8">
-                                                    <rect key="frame" x="481" y="50" width="46" height="30"/>
-                                                    <state key="normal" title="Button"/>
-                                                </button>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="iconmonstr-arrow-36-icon-256-2" translatesAutoresizingMaskIntoConstraints="NO" id="wHc-Nz-RP7">
+                                                    <rect key="frame" x="527" y="33" width="22" height="22"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="22" id="BDL-QX-Z5f"/>
+                                                        <constraint firstAttribute="height" constant="22" id="Wn7-C9-EQp"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="wHc-Nz-RP7" secondAttribute="bottom" constant="8" id="CKk-Pz-00U"/>
                                                 <constraint firstItem="nm9-8k-Rzl" firstAttribute="leading" secondItem="BvG-e4-kyM" secondAttribute="leadingMargin" constant="12" id="Ia4-uK-cLc"/>
-                                                <constraint firstAttribute="trailing" secondItem="lYc-cQ-6J8" secondAttribute="trailing" constant="12" id="Ng8-5I-ypK"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="nm9-8k-Rzl" secondAttribute="bottom" constant="8" id="Td2-6S-2Wl"/>
-                                                <constraint firstItem="nm9-8k-Rzl" firstAttribute="top" secondItem="BvG-e4-kyM" secondAttribute="topMargin" constant="8" id="X2h-Af-Urw"/>
-                                                <constraint firstItem="lYc-cQ-6J8" firstAttribute="top" secondItem="BvG-e4-kyM" secondAttribute="top" constant="8" id="aNC-CL-ub4"/>
-                                                <constraint firstAttribute="bottom" secondItem="lYc-cQ-6J8" secondAttribute="bottom" constant="8" id="mpY-i0-Z61"/>
+                                                <constraint firstItem="wHc-Nz-RP7" firstAttribute="top" secondItem="BvG-e4-kyM" secondAttribute="top" constant="8" id="Kwc-6N-dzx"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="nm9-8k-Rzl" secondAttribute="bottom" constant="2" id="Td2-6S-2Wl"/>
+                                                <constraint firstItem="nm9-8k-Rzl" firstAttribute="top" secondItem="BvG-e4-kyM" secondAttribute="topMargin" constant="2" id="X2h-Af-Urw"/>
+                                                <constraint firstAttribute="trailing" secondItem="wHc-Nz-RP7" secondAttribute="trailing" constant="12" id="rNn-1D-dE1"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="dropDownImage" destination="wHc-Nz-RP7" id="oF9-iv-9UU"/>
                                             <outlet property="filterLabel" destination="nm9-8k-Rzl" id="15l-oo-z2I"/>
-                                            <outlet property="filterSelectButton" destination="lYc-cQ-6J8" id="faC-It-E6T"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -294,4 +297,7 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="iconmonstr-arrow-36-icon-256-2" width="256" height="256"/>
+    </resources>
 </document>

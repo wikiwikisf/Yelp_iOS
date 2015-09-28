@@ -10,14 +10,28 @@ import UIKit
 
 enum rowId : String {
     case Deal = "Offering a Deal"
+    case BestMatch = "Best Match"
     case Radius800 = "800 meters"
     case Radius1600 = "1600 meters"
     case Radius8000 = "8000 meters"
     case Radius16000 = "16000 meters"
-    case SortByBest = "Best Match"
     case SortByDistance = "Distance"
     case SortByRating = "Highest Rated"
 }
+
+let radiusMap : [rowId: YelpRadiusMode] = [
+  .BestMatch : .RadiusNone,
+  .Radius800 : .Radius800,
+  .Radius1600 : .Radius1600,
+  .Radius8000 : .Radius8000,
+  .Radius16000 : .Radius16000
+]
+
+let sortByMap : [rowId: YelpSortMode] = [
+  .BestMatch : .BestMatched,
+  .SortByDistance : .Distance,
+  .SortByRating : .HighestRated
+]
 
 let restaurantCategories = [["name" : "Afghan", "code": "afghani"],
     ["name" : "African", "code": "african"],
@@ -201,14 +215,14 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   @IBOutlet weak var tableView: UITableView!
   
   var tableStructure : [(String, [rowId], String)] = [("", [.Deal], SwitchCellIdentifier),
-      ("Distance", [.Radius800, .Radius1600, .Radius8000, .Radius16000], DropDownCellIdentifier),
-      ("Sort By", [.SortByBest, .SortByDistance, .SortByRating], DropDownCellIdentifier),
-      ("Category", [], SwitchCellIdentifier)]
+    ("Distance", [.BestMatch], DropDownCellIdentifier),
+    ("Sort By", [.BestMatch], DropDownCellIdentifier),
+    ("Category", [], SwitchCellIdentifier)]
   
   var dealsSwitchState: Bool = false
-  var sortByMenuState: YelpSortMode = .BestMatched
-  var radiusMenuState: YelpRadiusMode = .RadiusNone
-  var categorySwitchStates : [Int: Bool] = [:] // for each row in Category section store on/off - true/false
+  var sortByMenuState: YelpSortMode?
+  var radiusMenuState: YelpRadiusMode?
+  var categorySwitchStates : [Int: Bool] = [:]
   
   weak var delegate: FiltersViewControllerDelegate?
   
@@ -272,6 +286,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       let itemsInSection = tableStructure[indexPath.section].1
       cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
       
+      if itemsInSection.count > 1 {
+        cell.dropDownImage.image = UIImage(named: "iconmonstr-circle-outline-icon-256-2")
+      } else {
+        if (indexPath.section == 1 && radiusMenuState != nil) || (indexPath.section == 2 && sortByMenuState != nil){
+          cell.dropDownImage.image = UIImage(named: "iconmonstr-check-mark-11-icon-256-2")
+        } else {
+          cell.dropDownImage.image = UIImage(named: "iconmonstr-arrow-36-icon-256-2")
+        }
+      }
+      
       // TODO
       //cell.delegate = self
       return cell
@@ -298,6 +322,35 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     return 30
   }
+  
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    let filterSection = indexPath.section
+    
+    // When Radius or Sort By sections are selected, expand and collapse
+    if filterSection == 1 || filterSection == 2 {
+      if tableStructure[filterSection].1.count == 1 {
+        // Show all options
+        if filterSection == 1 {
+          tableStructure[filterSection].1 = [.BestMatch, .Radius800, .Radius1600, .Radius8000, .Radius16000]
+        } else {
+          tableStructure[filterSection].1 = [.BestMatch, .SortByDistance, .SortByRating]
+        }
+      } else {
+        // Select new option and hide
+        let selectedRowValue = tableStructure[filterSection].1[indexPath.row]
+        tableStructure[filterSection].1 = [selectedRowValue]
+        
+        if filterSection == 1 {
+          radiusMenuState = radiusMap[selectedRowValue]!
+        } else {
+          sortByMenuState = sortByMap[selectedRowValue]!
+        }
+      }
+    }
+    
+    tableView.reloadData()
+  }
 
   func cancelFilter() {
     dismissViewControllerAnimated(true, completion: nil)
@@ -306,11 +359,12 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func searchWithFilters() {
     dismissViewControllerAnimated(true, completion: nil)
   
-    // Assemble filters
+    // Assemble filters 
+    // TODO: move this to a FiltersModel to assemble?
     var filters: [String: Any] = [:]
     filters["deals"] = dealsSwitchState
-    filters["sortBy"] = sortByMenuState
-    filters["radius"] = radiusMenuState
+    filters["sortBy"] = sortByMenuState ?? .BestMatched
+    filters["radius"] = radiusMenuState ?? .RadiusNone
   
     var selectedCategories = [String]()
     for (row, isSelected) in categorySwitchStates {

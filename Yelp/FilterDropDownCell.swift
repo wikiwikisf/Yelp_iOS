@@ -11,7 +11,7 @@ import UIKit
 class FilterDropDownCell: UITableViewCell {
   
   @IBOutlet weak var filterLabel: UILabel!
-  @IBOutlet weak var filterSelectButton: UIButton!
+  @IBOutlet weak var dropDownImage: UIImageView!
   
   override func awakeFromNib() {
     super.awakeFromNib()
