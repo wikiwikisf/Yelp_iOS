@@ -32,7 +32,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     mapView.setRegion(coordinate, animated: false)
     
     for business in businesses {
-      addPin(business.address!)
+      addPin(business.address!, name: business.name!)
     }
   }
   
@@ -45,13 +45,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     dismissViewControllerAnimated(true, completion: nil)
   }
   
-  func addPin(address: String) {
+  func addPin(address: String, name: String) {
     print("addpin for " + address)
-    var geocoder = CLGeocoder()
+    let geocoder = CLGeocoder()
     
     geocoder.geocodeAddressString(address) { (placeMarks: [CLPlacemark]?, error: NSError?) -> Void in
       if let placemark = placeMarks?[0] {
-        self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
+        let mkp : MKPlacemark = MKPlacemark(placemark: placemark)
+        let annotation : MKPointAnnotation = MKPointAnnotation()
+        annotation.coordinate = mkp.coordinate
+        annotation.title = name
+        annotation.subtitle = address
+        self.mapView.addAnnotation(annotation)
       }
     }
   }
