@@ -34,3 +34,4 @@ Time spent: `34 hours`
 - [ ] Implement the restaurant detail page.
 
 ### Walkthrough
+![Video Walkthrough](Yelp-iOS2.gif)
