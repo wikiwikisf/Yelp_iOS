@@ -344,7 +344,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     if section == 4 {
       return 0
     } else {
-      return 30      
+      return 50
     }
   }
   
