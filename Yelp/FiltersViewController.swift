@@ -34,18 +34,11 @@ let sortByMap : [rowId: YelpSortMode] = [
 ]
 
 let popularCategories = [["name" : "American, New", "code": "newamerican"],
-  ["name" : "American, Traditional", "code": "tradamerican"],
-  ["name" : "Argentine", "code": "argentine"],
   ["name" : "Asian Fusion", "code": "asianfusion"],
   ["name" : "Breakfast & Brunch", "code": "breakfast_brunch"],
-  ["name" : "Indian", "code": "indpak"],
-  ["name" : "Indonesian", "code": "indonesian"],
-  ["name" : "International", "code": "international"],
-  ["name" : "Spanish", "code": "spanish"],
-  ["name" : "Steakhouses", "code": "steak"],
   ["name" : "Sushi Bars", "code": "sushi"]]
 
-let restaurantCategories = [["name" : "Afghan", "code": "afghani"],
+let allCategories = [["name" : "Afghan", "code": "afghani"],
     ["name" : "African", "code": "african"],
     ["name" : "American, New", "code": "newamerican"],
     ["name" : "American, Traditional", "code": "tradamerican"],
@@ -281,7 +274,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       if itemsInSection.count == 0 {
         if (tableStructure.count == 4) {
           // Rendering all categories
-          cell.filterLabel?.text = restaurantCategories[indexPath.row]["name"]
+          cell.filterLabel?.text = allCategories[indexPath.row]["name"]
         } else {
           cell.filterLabel?.text = popularCategories[indexPath.row]["name"]
         }
@@ -332,7 +325,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if section == 3{
       if tableStructure.count == 4 {
-        return restaurantCategories.count
+        return allCategories.count
       } else {
         return popularCategories.count
       }
@@ -406,7 +399,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     for (row, isSelected) in categorySwitchStates {
       if isSelected {
         if tableStructure.count == 4 {
-          selectedCategories.append(restaurantCategories[row]["code"]!)
+          selectedCategories.append(allCategories[row]["code"]!)
         } else {
           selectedCategories.append(popularCategories[row]["code"]!)
         }
