@@ -31,8 +31,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     let coordinate: MKCoordinateRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.785771,-122.406165), MKCoordinateSpanMake(0.1,0.1))
     mapView.setRegion(coordinate, animated: false)
     
-    for business in businesses {
-      addPin(business.address!, name: business.name!)
+    if (businesses != nil) {
+      for business in businesses {
+        addPin(business.address!, name: business.name!)
+      }      
     }
   }
   

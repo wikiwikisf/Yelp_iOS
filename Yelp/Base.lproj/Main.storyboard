@@ -113,6 +113,26 @@
                                             <outlet property="typeLabel" destination="vUh-aD-ZnS" id="rom-tH-kNl"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NoResultsCell" id="h5g-8B-FKu" customClass="NoResultsCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="255" width="600" height="163"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="h5g-8B-FKu" id="X1e-Nj-B0y">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="162.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="No Results Found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kQ6-9J-jHf">
+                                                    <rect key="frame" x="223" y="71" width="135" height="52"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="kQ6-9J-jHf" firstAttribute="centerX" secondItem="X1e-Nj-B0y" secondAttribute="centerX" id="J4y-LE-amZ"/>
+                                                <constraint firstItem="kQ6-9J-jHf" firstAttribute="centerY" secondItem="X1e-Nj-B0y" secondAttribute="centerY" id="bon-4V-0lv"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>

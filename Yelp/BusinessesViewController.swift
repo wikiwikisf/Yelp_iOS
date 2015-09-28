@@ -17,14 +17,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   let defaultSearch: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode) =
     ("Restaurants", .Distance, [], false, .RadiusNone)
   
-  /*
-  let defaultSearch : [String: AnyObject] =
-  [ "searchTerm" : "Restaurants",
-  "sortBy" : .Distance,
-  "categories" : [],
-  "deals" :
-  ]
-  */
   var savedSearchTerm: String = ""
   
   override func viewDidLoad() {
@@ -56,6 +48,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     mapButton.target = self
     navigationItem.rightBarButtonItem = mapButton
     
+    JTProgressHUD.show()
     performSearch(defaultSearch)
   }
   
@@ -71,8 +64,8 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     Business.searchWithTerm(searchFilters.searchTerm!, sort: searchFilters.sort, categories: searchFilters.categories,
       deals: searchFilters.deals, radius: searchFilters.radius) { (businesses: [Business]!, error: NSError!) -> Void in
       
-      // TODO: handle error
       dispatch_async(dispatch_get_main_queue()) {
+        JTProgressHUD.hide()
         self.businesses = businesses
         self.tableView.reloadData()
         
@@ -96,13 +89,19 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     if businesses != nil {
       return businesses.count
     } else {
-      return 0
+      // Render no results cell
+      return 1
     }
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
+    // If businesses is nil then let cell be NoResultsCell
+    if businesses == nil {
+      let cell = tableView.dequeueReusableCellWithIdentifier("NoResultsCell", forIndexPath: indexPath) as! NoResultsCell
+      return cell
+    }
     
+    let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
     cell.business = businesses[indexPath.row]
     return cell
   }
@@ -128,6 +127,7 @@ extension BusinessesViewController : UISearchBarDelegate {
     let searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode) =
     (searchText, defaultSearch.sort, defaultSearch.categories, defaultSearch.deals, defaultSearch.radius)
     
+    JTProgressHUD.show()
     performSearch(searchFilters)
   }
 }
@@ -144,6 +144,7 @@ extension BusinessesViewController : FiltersViewControllerDelegate {
         filters["deals"] as! Bool,
         filters["radius"] as! YelpRadiusMode)
     
+    JTProgressHUD.show()
     performSearch(searchFilters)
   }
 }

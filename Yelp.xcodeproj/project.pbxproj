@@ -23,6 +23,7 @@
 		F1AFDC701BB8C75A0051BF57 /* SeeAllCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AFDC6F1BB8C75A0051BF57 /* SeeAllCell.swift */; settings = {ASSET_TAGS = (); }; };
 		F1AFDC721BB8DC760051BF57 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1AFDC711BB8DC760051BF57 /* MapKit.framework */; };
 		F1AFDC741BB8ED360051BF57 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AFDC731BB8ED360051BF57 /* MapViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		F1AFDC761BB9046C0051BF57 /* NoResultsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1AFDC751BB9046C0051BF57 /* NoResultsCell.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		F1AFDC6F1BB8C75A0051BF57 /* SeeAllCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeeAllCell.swift; sourceTree = "<group>"; };
 		F1AFDC711BB8DC760051BF57 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		F1AFDC731BB8ED360051BF57 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		F1AFDC751BB9046C0051BF57 /* NoResultsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoResultsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +187,7 @@
 				F1AFDC691BB680E20051BF57 /* FilterSwitchCell.swift */,
 				F1AFDC6D1BB7C6750051BF57 /* FilterDropDownCell.swift */,
 				F1AFDC6F1BB8C75A0051BF57 /* SeeAllCell.swift */,
+				F1AFDC751BB9046C0051BF57 /* NoResultsCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				F1AFDC741BB8ED360051BF57 /* MapViewController.swift in Sources */,
 				22AAAA991AEA0A9700A544AF /* Business.swift in Sources */,
 				222D8A7D19CCFAE000D2DB53 /* YelpClient.swift in Sources */,
+				F1AFDC761BB9046C0051BF57 /* NoResultsCell.swift in Sources */,
 				222D8A5B19CCF9F900D2DB53 /* AppDelegate.swift in Sources */,
 				F1AFDC6E1BB7C6750051BF57 /* FilterDropDownCell.swift in Sources */,
 				F1AFDC701BB8C75A0051BF57 /* SeeAllCell.swift in Sources */,
