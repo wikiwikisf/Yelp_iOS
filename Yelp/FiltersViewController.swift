@@ -33,6 +33,18 @@ let sortByMap : [rowId: YelpSortMode] = [
   .SortByRating : .HighestRated
 ]
 
+let popularCategories = [["name" : "American, New", "code": "newamerican"],
+  ["name" : "American, Traditional", "code": "tradamerican"],
+  ["name" : "Argentine", "code": "argentine"],
+  ["name" : "Asian Fusion", "code": "asianfusion"],
+  ["name" : "Breakfast & Brunch", "code": "breakfast_brunch"],
+  ["name" : "Indian", "code": "indpak"],
+  ["name" : "Indonesian", "code": "indonesian"],
+  ["name" : "International", "code": "international"],
+  ["name" : "Spanish", "code": "spanish"],
+  ["name" : "Steakhouses", "code": "steak"],
+  ["name" : "Sushi Bars", "code": "sushi"]]
+
 let restaurantCategories = [["name" : "Afghan", "code": "afghani"],
     ["name" : "African", "code": "african"],
     ["name" : "American, New", "code": "newamerican"],
@@ -205,6 +217,7 @@ let restaurantCategories = [["name" : "Afghan", "code": "afghani"],
 
 let SwitchCellIdentifier = "FilterSwitchCell"
 let DropDownCellIdentifier = "FilterDropDownCell"
+let SeeAllCellIdentifier = "SeeAllCell"
 
 protocol FiltersViewControllerDelegate: class {
   func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:Any])
@@ -217,7 +230,8 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   var tableStructure : [(String, [rowId], String)] = [("", [.Deal], SwitchCellIdentifier),
     ("Distance", [.BestMatch], DropDownCellIdentifier),
     ("Sort By", [.BestMatch], DropDownCellIdentifier),
-    ("Category", [], SwitchCellIdentifier)]
+    ("Category", [], SwitchCellIdentifier),
+    ("", [], SeeAllCellIdentifier)]
   
   var dealsSwitchState: Bool = false
   var sortByMenuState: YelpSortMode?
@@ -265,14 +279,19 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         as! FilterSwitchCell
       let itemsInSection = tableStructure[indexPath.section].1
       if itemsInSection.count == 0 {
-        cell.filterLabel?.text = restaurantCategories[indexPath.row]["name"]
+        if (tableStructure.count == 4) {
+          // Rendering all categories
+          cell.filterLabel?.text = restaurantCategories[indexPath.row]["name"]
+        } else {
+          cell.filterLabel?.text = popularCategories[indexPath.row]["name"]
+        }
       } else {
         cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
       }
       
       cell.delegate = self
       
-      // Try to read the switch states to render the correct state in the cell
+      // Read the switch states to render the correct state in the cell
       if indexPath.section == 0 {
         cell.onSwitch.on = dealsSwitchState
       } else if indexPath.section == 3 {
@@ -280,12 +299,13 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       }
       
       return cell
-    } else {
+    } else if cellType == DropDownCellIdentifier{
       let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
         as! FilterDropDownCell
       let itemsInSection = tableStructure[indexPath.section].1
       cell.filterLabel?.text = itemsInSection[indexPath.row].rawValue
       
+      // Read the menu states to render the correct image in the cell
       if itemsInSection.count > 1 {
         cell.dropDownImage.image = UIImage(named: "iconmonstr-circle-outline-icon-256-2")
       } else {
@@ -296,8 +316,11 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         }
       }
       
-      // TODO
-      //cell.delegate = self
+      return cell
+    } else {
+      // See All cell
+      let cell = tableView.dequeueReusableCellWithIdentifier(cellType, forIndexPath: indexPath)
+        as! SeeAllCell
       return cell
     }
   }
@@ -307,9 +330,14 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    let sectionName = tableStructure[section].0
-    if sectionName == "Category" {
-      return restaurantCategories.count
+    if section == 3{
+      if tableStructure.count == 4 {
+        return restaurantCategories.count
+      } else {
+        return popularCategories.count
+      }
+    } else if section == 4 {
+      return 1
     } else {
       return tableStructure[section].1.count
     }
@@ -320,7 +348,11 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
   }
   
   func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return 30
+    if section == 4 {
+      return 0
+    } else {
+      return 30      
+    }
   }
   
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -347,6 +379,10 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
           sortByMenuState = sortByMap[selectedRowValue]!
         }
       }
+    } else if filterSection == 4 {
+      // See All Button selected, remove the button
+      tableStructure.removeAtIndex(4)
+      
     }
     
     tableView.reloadData()
@@ -365,11 +401,15 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     filters["deals"] = dealsSwitchState
     filters["sortBy"] = sortByMenuState ?? .BestMatched
     filters["radius"] = radiusMenuState ?? .RadiusNone
-  
+    
     var selectedCategories = [String]()
     for (row, isSelected) in categorySwitchStates {
       if isSelected {
+        if tableStructure.count == 4 {
           selectedCategories.append(restaurantCategories[row]["code"]!)
+        } else {
+          selectedCategories.append(popularCategories[row]["code"]!)
+        }
       }
     }
     filters["categories"] = selectedCategories

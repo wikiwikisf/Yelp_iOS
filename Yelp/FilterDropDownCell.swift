@@ -2,7 +2,7 @@
 //  FilterDropDownCell.swift
 //  Yelp
 //
-//  Created by Vicki Chun on 9/26/15.
+//  Created by Vicki Chun Grospe on 9/26/15.
 //  Copyright © 2015 Timothy Lee. All rights reserved.
 //
 
