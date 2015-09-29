@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate {
   
   var businesses: [Business]!
   
@@ -85,6 +85,21 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     // Dispose of any resources that can be recreated.
   }
   
+  // MARK: - UIViewController
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    let navigationController = segue.destinationViewController as! UINavigationController
+    for view in navigationController.viewControllers {
+      if let filtersViewController = view as? FiltersViewController {
+        filtersViewController.delegate = self
+      } else if let mapViewController = view as? MapViewController {
+        mapViewController.businesses = businesses
+      }
+    }
+  }
+}
+
+// MARK: - UITableViewDataSource
+extension BusinessesViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if businesses != nil {
       return businesses.count
@@ -105,22 +120,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     cell.business = businesses[indexPath.row]
     return cell
   }
-  
-  // MARK: - UIViewController
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    let navigationController = segue.destinationViewController as! UINavigationController
-    for view in navigationController.viewControllers {
-      if let filtersViewController = view as? FiltersViewController {
-        filtersViewController.delegate = self
-      } else if let mapViewController = view as? MapViewController {
-        mapViewController.businesses = businesses
-      }
-    }
-  }
 }
 
 // MARK: - UISearchBarDelegate
-extension BusinessesViewController : UISearchBarDelegate {
+extension BusinessesViewController: UISearchBarDelegate {
   func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
     savedSearchTerm = searchText
     // TODO: Pass in correct filters, default values for sort, categories, deals for now
@@ -133,7 +136,7 @@ extension BusinessesViewController : UISearchBarDelegate {
 }
 
 // MARK: - FiltersViewControllerDelegate
-extension BusinessesViewController : FiltersViewControllerDelegate {
+extension BusinessesViewController: FiltersViewControllerDelegate {
   func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : Any]) {
     // Search with the filter from the filter view controller page
     print("perform search with filter!")

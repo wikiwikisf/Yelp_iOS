@@ -216,7 +216,7 @@ protocol FiltersViewControllerDelegate: class {
   func filtersViewControllerSearch(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:Any])
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class FiltersViewController: UIViewController {
   
   @IBOutlet weak var tableView: UITableView!
   
@@ -264,6 +264,86 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     // Dispose of any resources that can be recreated.
   }
   
+  internal func cancelFilter() {
+    dismissViewControllerAnimated(true, completion: nil)
+  }
+  
+  internal func searchWithFilters() {
+    dismissViewControllerAnimated(true, completion: nil)
+  
+    // Assemble filters 
+    // TODO: move this to a FiltersModel to assemble?
+    var filters: [String: Any] = [:]
+    filters["deals"] = dealsSwitchState
+    filters["sortBy"] = sortByMenuState ?? .BestMatched
+    filters["radius"] = radiusMenuState ?? .RadiusNone
+    
+    var selectedCategories = [String]()
+    for (row, isSelected) in categorySwitchStates {
+      if isSelected {
+        if tableStructure.count == 4 {
+          selectedCategories.append(allCategories[row]["code"]!)
+        } else {
+          selectedCategories.append(popularCategories[row]["code"]!)
+        }
+      }
+    }
+    filters["categories"] = selectedCategories
+
+    delegate?.filtersViewControllerSearch(self, didUpdateFilters: filters)
+  }
+
+  /*
+  // MARK: - Navigation
+
+  // In a storyboard-based application, you will often want to do a little preparation before navigation
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+      // Get the new view controller using segue.destinationViewController.
+      // Pass the selected object to the new view controller.
+  }
+  */
+
+}
+
+// MARK: - UITableViewDelegate
+extension FiltersViewController: UITableViewDelegate {
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    let filterSection = indexPath.section
+    
+    // When Radius or Sort By sections are selected, expand and collapse
+    if filterSection == 1 || filterSection == 2 {
+      if tableStructure[filterSection].1.count == 1 {
+        // Show all options
+        if filterSection == 1 {
+          tableStructure[filterSection].1 = [.BestMatch, .Radius800, .Radius1600, .Radius8000, .Radius16000]
+        } else {
+          tableStructure[filterSection].1 = [.BestMatch, .SortByDistance, .SortByRating]
+        }
+      } else {
+        // Select new option and hide
+        let selectedRowValue = tableStructure[filterSection].1[indexPath.row]
+        tableStructure[filterSection].1 = [selectedRowValue]
+        
+        if filterSection == 1 {
+          radiusMenuState = radiusMap[selectedRowValue]!
+        } else {
+          sortByMenuState = sortByMap[selectedRowValue]!
+        }
+      }
+    } else if filterSection == 4 {
+      // See All Button selected, remove the button
+      tableStructure.removeAtIndex(4)
+      
+    }
+    
+    tableView.reloadData()
+  }
+
+}
+
+// MARK: - UITableViewDataSource 
+extension FiltersViewController: UITableViewDataSource {
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cellType = tableStructure[indexPath.section].2
     
@@ -347,79 +427,6 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
       return 50
     }
   }
-  
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    tableView.deselectRowAtIndexPath(indexPath, animated: true)
-    let filterSection = indexPath.section
-    
-    // When Radius or Sort By sections are selected, expand and collapse
-    if filterSection == 1 || filterSection == 2 {
-      if tableStructure[filterSection].1.count == 1 {
-        // Show all options
-        if filterSection == 1 {
-          tableStructure[filterSection].1 = [.BestMatch, .Radius800, .Radius1600, .Radius8000, .Radius16000]
-        } else {
-          tableStructure[filterSection].1 = [.BestMatch, .SortByDistance, .SortByRating]
-        }
-      } else {
-        // Select new option and hide
-        let selectedRowValue = tableStructure[filterSection].1[indexPath.row]
-        tableStructure[filterSection].1 = [selectedRowValue]
-        
-        if filterSection == 1 {
-          radiusMenuState = radiusMap[selectedRowValue]!
-        } else {
-          sortByMenuState = sortByMap[selectedRowValue]!
-        }
-      }
-    } else if filterSection == 4 {
-      // See All Button selected, remove the button
-      tableStructure.removeAtIndex(4)
-      
-    }
-    
-    tableView.reloadData()
-  }
-
-  internal func cancelFilter() {
-    dismissViewControllerAnimated(true, completion: nil)
-  }
-  
-  internal func searchWithFilters() {
-    dismissViewControllerAnimated(true, completion: nil)
-  
-    // Assemble filters 
-    // TODO: move this to a FiltersModel to assemble?
-    var filters: [String: Any] = [:]
-    filters["deals"] = dealsSwitchState
-    filters["sortBy"] = sortByMenuState ?? .BestMatched
-    filters["radius"] = radiusMenuState ?? .RadiusNone
-    
-    var selectedCategories = [String]()
-    for (row, isSelected) in categorySwitchStates {
-      if isSelected {
-        if tableStructure.count == 4 {
-          selectedCategories.append(allCategories[row]["code"]!)
-        } else {
-          selectedCategories.append(popularCategories[row]["code"]!)
-        }
-      }
-    }
-    filters["categories"] = selectedCategories
-
-    delegate?.filtersViewControllerSearch(self, didUpdateFilters: filters)
-  }
-
-  /*
-  // MARK: - Navigation
-
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-      // Get the new view controller using segue.destinationViewController.
-      // Pass the selected object to the new view controller.
-  }
-  */
-
 }
 
 // MARK: - FilterSwitchCellDelegate
