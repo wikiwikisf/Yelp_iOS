@@ -52,11 +52,11 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     performSearch(defaultSearch)
   }
   
-  func showFilterView() {
+  internal func showFilterView() {
     performSegueWithIdentifier("filterSegue", sender: self)
   }
   
-  func showMapView() {
+  internal func showMapView() {
     performSegueWithIdentifier("mapSegue", sender: self)
   }
   

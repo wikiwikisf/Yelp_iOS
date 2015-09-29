@@ -381,11 +381,11 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     tableView.reloadData()
   }
 
-  func cancelFilter() {
+  internal func cancelFilter() {
     dismissViewControllerAnimated(true, completion: nil)
   }
   
-  func searchWithFilters() {
+  internal func searchWithFilters() {
     dismissViewControllerAnimated(true, completion: nil)
   
     // Assemble filters 

@@ -43,11 +43,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // Dispose of any resources that can be recreated.
   }
   
-  func backToListView() {
+  internal func backToListView() {
     dismissViewControllerAnimated(true, completion: nil)
   }
   
-  func addPin(address: String, name: String) {
+  internal func addPin(address: String, name: String) {
     print("addpin for " + address)
     let geocoder = CLGeocoder()
     
