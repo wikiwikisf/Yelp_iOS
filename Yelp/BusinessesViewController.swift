@@ -60,7 +60,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     performSegueWithIdentifier("mapSegue", sender: self)
   }
   
-  func performSearch(searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode)) {
+  internal func performSearch(searchFilters: (searchTerm: String?, sort: YelpSortMode, categories: [String], deals: Bool, radius: YelpRadiusMode)) {
     Business.searchWithTerm(searchFilters.searchTerm!, sort: searchFilters.sort, categories: searchFilters.categories,
       deals: searchFilters.deals, radius: searchFilters.radius) { (businesses: [Business]!, error: NSError!) -> Void in
       
